@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE library SYSTEM
-        "C:\Users\Agerest\IdeaProjects\starting-monkey-to-human-path\src\RPIS61\Kres\wdad\learn\xml\library.dtd">
-<library>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><library>
 
     <reader firstname="Vasya" secondname="Pupkin">
         <book>

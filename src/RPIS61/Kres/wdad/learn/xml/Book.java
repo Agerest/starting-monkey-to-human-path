@@ -1,5 +1,9 @@
 package RPIS61.Kres.wdad.learn.xml;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Book {
 
     private String authorFirstName;
@@ -7,6 +11,24 @@ public class Book {
     private String name;
     private int printYear;
     private Genre genre;
+    private Date takeDate;
+    private SimpleDateFormat format;
+
+    public Book() {
+        format = new SimpleDateFormat("dd.mm.yyyy");
+    }
+
+    public Date getTakeDate() {
+        return takeDate;
+    }
+
+    public void setTakeDate(String takeDate) {
+        try {
+            this.takeDate = format.parse(takeDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void setAuthorFirstName(String authorFirstName) {
         this.authorFirstName = authorFirstName;
@@ -52,10 +74,11 @@ public class Book {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Автор: ").append(authorFirstName).append(" ")
-                .append(authorSecondName).append(" Название ")
-                .append(name).append(" Год издания: ")
-                .append(printYear).append(" Жанр: ")
-                .append(genre);
+                .append(authorSecondName).append(", Название: ")
+                .append(name).append(", Год издания: ")
+                .append(printYear).append(", Жанр: ")
+                .append(genre).append(", Дата выдачи: ")
+                .append(format.format(takeDate));
         return sb.toString();
     }
 

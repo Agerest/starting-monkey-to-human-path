@@ -1,7 +1,5 @@
 package RPIS61.Kres.wdad.learn.xml;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -10,19 +8,15 @@ public class Reader {
     private String firstName;
     private String secondName;
     private ArrayList<Book> booksList;
-    private ArrayList<Date> dateList;
-    private SimpleDateFormat format;
 
     public Reader() {
         booksList = new ArrayList<>();
-        dateList = new ArrayList<>();
-        format = new SimpleDateFormat("dd.MM.yyyy");
     }
 
     public boolean isNegligent() {
         Date dateNow = new Date();
-        for (Date date:dateList) {
-            if ((double)(dateNow.getTime()-date.getTime())/(7*24 * 60 * 60 * 1000)>2)
+        for (Book book:booksList) {
+            if ((double)(dateNow.getTime()-book.getTakeDate().getTime())/(7*24 * 60 * 60 * 1000)>2)
                 return true;
         }
         return false;
@@ -37,7 +31,6 @@ public class Reader {
     }
 
     public void removeBook(Book book) {
-        dateList.remove(booksList.indexOf(book));
         booksList.remove(book);
     }
 
@@ -49,21 +42,15 @@ public class Reader {
         return secondName;
     }
 
-    public void addBook(Book book, String date) {
+    public void addBook(Book book) {
         booksList.add(book);
-        try {
-            dateList.add(format.parse(date));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
     }
 
-    public String getBooks() {
+    private String getBooks() {
         StringBuilder sb = new StringBuilder();
         sb.append("Книги, которые должен вернуть:\n");
-        for (int i = 0; i < booksList.size(); i++) {
-            sb.append(booksList.get(i).toString()).append("\n");
-            sb.append("Дата выдачи: " + format.format(dateList.get(i))).append("\n");
+        for (Book book:booksList) {
+            sb.append(book.toString()).append("\n");
         }
         return sb.toString();
     }
@@ -75,7 +62,7 @@ public class Reader {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Читатель: ").append(firstName).append(" ").append(secondName);
+        sb.append("Читатель: ").append(firstName).append(" ").append(secondName).append("\n").append(getBooks());
         return sb.toString();
     }
 }
