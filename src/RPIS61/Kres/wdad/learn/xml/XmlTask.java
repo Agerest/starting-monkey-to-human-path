@@ -123,11 +123,7 @@ public class XmlTask {
                 break;
             }
         }
-        try {
-            TransformerFactory.newInstance().newTransformer().transform(new DOMSource(document),new StreamResult(new File(XML_PATH)));
-        } catch (TransformerException e) {
-            e.printStackTrace();
-        }
+        saveXML();
         reader.removeBook(book);
     }
 
@@ -158,11 +154,7 @@ public class XmlTask {
         takeDate.setAttribute("year", Integer.toString(book.getTakeDate().getYear()));
         tempReader.appendChild(takeDate);
         reader.addBook(book);
-        try {
-            TransformerFactory.newInstance().newTransformer().transform(new DOMSource(document),new StreamResult(new File(XML_PATH)));
-        } catch (TransformerException e) {
-            e.printStackTrace();
-        }
+        saveXML();
     }
 
     public static ArrayList<Reader> getReaders() {
@@ -178,6 +170,14 @@ public class XmlTask {
             }
         }
         return null;
+    }
+
+    private void saveXML() {
+        try {
+            TransformerFactory.newInstance().newTransformer().transform(new DOMSource(document),new StreamResult(new File(XML_PATH)));
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
     }
 
 }
