@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><library>
+
+    <reader firstname="Vasya" secondname="Pupkin">
+        <book>
+            <author>
+                <firstname>John</firstname>
+                <secondname>Tolkien</secondname>
+            </author>
+            <name>The Hobbit or There and Back Again</name>
+            <printyear>1937</printyear>
+            <genre value="other"/>
+        </book>
+        <takedate day="07" month="10" year="2018"/>
+    </reader>
+
+    <reader firstname="Zhenya" secondname="Pupkin">
+        <book>
+            <author>
+                <firstname>John</firstname>
+                <secondname>Tolkien</secondname>
+            </author>
+            <name>The Fellowship of the Ring</name>
+            <printyear>1954</printyear>
+            <genre value="other"/>
+        </book>
+        <takedate day="11" month="02" year="2018"/>
+        <book>
+            <author>
+                <firstname>Wop</firstname>
+                <secondname>Pop</secondname>
+            </author>
+            <name>Chicken</name>
+            <printyear>2018</printyear>
+            <genre value="epos"/>
+        </book>
+        <takedate day="10" month="08" year="2018"/>
+    </reader>
+
+    <reader firstname="Koly" secondname="Pupkin">
+        <book>
+            <author>
+                <firstname>John</firstname>
+                <secondname>Tolkien</secondname>
+            </author>
+            <name>The Two Towers</name>
+            <printyear>1954</printyear>
+            <genre value="other"/>
+        </book>
+        <takedate day="11" month="02" year="2018"/>
+    </reader>
+
+    <reader firstname="Nicholas" secondname="Vujicic">
+        <book>
+            <author>
+                <firstname>John</firstname>
+                <secondname>Tolkien</secondname>
+            </author>
+            <name>The Return of the King</name>
+            <printyear>1955</printyear>
+            <genre value="other"/>
+        </book>
+        <takedate day="05" month="08" year="2018"/>
+    </reader>
+
+</library>
