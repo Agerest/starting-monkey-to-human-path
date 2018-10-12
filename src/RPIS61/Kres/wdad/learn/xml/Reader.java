@@ -59,7 +59,7 @@ public class Reader {
     }
 
     public List<Book> getBooksList() {
-        return booksList.subList(0,booksList.size()-1);
+        return booksList.subList(0,booksList.size());
     }
 
     @Override

@@ -1,6 +1,8 @@
 package RPIS61.Kres.wdad.learn.xml;
 
 import java.io.File;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 
 import org.w3c.dom.*;
@@ -16,15 +18,16 @@ import java.util.Objects;
 public class XmlTask {
 
     private static ArrayList<Reader> readers;
-    private static final String XML_PATH = "\\src\\RPIS61\\Kres\\wdad\\learn\\xml\\library.xml";
+    private static final String XML_PATH = "src\\RPIS61\\Kres\\wdad\\learn\\xml\\library.xml";
     private Document document;
 
     public XmlTask() {
         readers = new ArrayList<>();
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setIgnoringElementContentWhitespace(true);
-            document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(XML_PATH);
+//            factory.setIgnoringElementContentWhitespace(true);
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            document = builder.parse(XML_PATH);
             readXML();
         } catch (SAXException | IOException | ParserConfigurationException e) {
             e.printStackTrace();
@@ -55,8 +58,8 @@ public class XmlTask {
                         switch (book.item(k).getNodeName()) {
                             case "author": {
                                 authorNode = (Element) book.item(k);
-                                tempBook.setAuthorFirstName(authorNode.getElementsByTagName("firstname").item(0).getNodeValue());
-                                tempBook.setAuthorFirstName(authorNode.getElementsByTagName("secondname").item(0).getNodeValue());
+                                tempBook.setAuthorFirstName(authorNode.getElementsByTagName("firstname").item(0).getTextContent());
+                                tempBook.setAuthorSecondName(authorNode.getElementsByTagName("secondname").item(0).getTextContent());
                                 //todo same with secondName
                                 break;
                             }
@@ -75,11 +78,13 @@ public class XmlTask {
                         }
                     }
                 }
-                dateNode = (Element) books.item(j);
-                tempBook.setTakeDate(dateNode.getAttribute("day") + "."//todo the same
-                        + dateNode.getAttribute("month") + "."
-                        + dateNode.getAttribute("year"));
-                tempReader.addBook(tempBook);
+                if (books.item(j).getNodeName().equals("takedate")) {
+                    dateNode = (Element) books.item(j);
+                    tempBook.setTakeDate(dateNode.getAttribute("day") + "."//todo the same
+                            + dateNode.getAttribute("month") + "."
+                            + dateNode.getAttribute("year"));
+                    tempReader.addBook(tempBook);
+                }
             }
             XmlTask.readers.add(tempReader);
         }
@@ -148,16 +153,17 @@ public class XmlTask {
         Node tempReader = searchReader(reader);
         tempReader.appendChild(tempBook);
         Element takeDate = document.createElement("takedate");
-        takeDate.setAttribute("day", Integer.toString(book.getTakeDate().getDay()));
-        takeDate.setAttribute("month", Integer.toString(book.getTakeDate().getMonth()));
-        takeDate.setAttribute("year", Integer.toString(book.getTakeDate().getYear()));
+        LocalDate localDate = book.getTakeDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        takeDate.setAttribute("day", Integer.toString(localDate.getDayOfMonth()));
+        takeDate.setAttribute("month", Integer.toString(localDate.getMonthValue()));
+        takeDate.setAttribute("year", Integer.toString(localDate.getYear()));
         tempReader.appendChild(takeDate);
         reader.addBook(book);
         saveXML();
     }
 
     public static List<Reader> getReaders() {
-        return readers.subList(0,readers.size()-1);
+        return readers.subList(0,readers.size());
     }
 
     private Node searchReader(Reader reader) {

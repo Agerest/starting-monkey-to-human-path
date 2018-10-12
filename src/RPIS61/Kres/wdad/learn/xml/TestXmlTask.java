@@ -9,7 +9,7 @@ public class TestXmlTask {
         book.setGenre(Genre.EPOPEE);
         book.setName("ttt");
         book.setPrintYear(1999);
-        book.setTakeDate("11.12.2013");
+        book.setTakeDate("05.01.2018");
 //        task.addBook(XmlTask.getReaders().get(1),book);
 //        task.removeBook(XmlTask.getReaders().get(1),book);
         XmlTask.getReaders().forEach(System.out::println);
