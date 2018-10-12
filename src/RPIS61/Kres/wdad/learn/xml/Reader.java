@@ -1,13 +1,16 @@
 package RPIS61.Kres.wdad.learn.xml;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Reader {
 
     private String firstName;
     private String secondName;
     private ArrayList<Book> booksList;
+    private final long MILLISECONDS_IN_2_WEEKS = 7*24 * 60 * 60 * 1000 *2;
 
     public Reader() {
         booksList = new ArrayList<>();
@@ -16,7 +19,7 @@ public class Reader {
     public boolean isNegligent() {
         Date dateNow = new Date();
         for (Book book:booksList) {
-            if ((double)(dateNow.getTime()-book.getTakeDate().getTime())/(7*24 * 60 * 60 * 1000)>2)
+            if ((dateNow.getTime()-book.getTakeDate().getTime()) > MILLISECONDS_IN_2_WEEKS)
                 return true;
         }
         return false;
@@ -55,7 +58,7 @@ public class Reader {
         return sb.toString();
     }
 
-    public ArrayList<Book> getBooksList() {
+    public List<Book> getBooksList() {
         return booksList;
     }
 

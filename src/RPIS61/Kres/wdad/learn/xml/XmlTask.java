@@ -22,6 +22,8 @@ public class XmlTask {
     public XmlTask() {
         readers = new ArrayList<>();
         try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setIgnoringElementContentWhitespace(true);
             document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(XML_PATH);
             readXML();
         } catch (SAXException | IOException | ParserConfigurationException e) {
@@ -34,17 +36,17 @@ public class XmlTask {
         NodeList readers = document.getDocumentElement().getElementsByTagName("reader");
         Book tempBook = new Book();
         Reader tempReader;
-        Node reader;
+        Element reader; //todo Element
         NamedNodeMap attributesReader;
         NodeList books;
         NodeList book;
         NodeList author;
         for (int i = 0; i < readers.getLength(); i++) {
             tempReader = new Reader();
-            reader = readers.item(i);
+            reader = (Element) readers.item(i);
             attributesReader = reader.getAttributes();
-            tempReader.setFirstName(attributesReader.getNamedItem("firstname").getNodeValue());
-            tempReader.setSecondName(attributesReader.getNamedItem("secondname").getNodeValue());
+            tempReader.setFirstName(attributesReader.getNamedItem("firstname").getNodeValue()); //todo reader.getAttribute("firstname")
+            tempReader.setSecondName(attributesReader.getNamedItem("secondname").getNodeValue()); //todo reader.getAttribute("secondname")
             books = reader.getChildNodes();
             for (int j = 0; j < books.getLength(); j++) {
                 if (books.item(j).getNodeType() == Node.ELEMENT_NODE) {
@@ -53,17 +55,11 @@ public class XmlTask {
                         book = books.item(j).getChildNodes();
                         for (int k = 0; k < book.getLength(); k++) {
                             if (book.item(k).getNodeType() == Node.ELEMENT_NODE) {
-
                                 switch (book.item(k).getNodeName()) {
                                     case "author": {
-                                        author = book.item(k).getChildNodes();
-                                        for (int l = 0; l < author.getLength(); l++) {
-                                            if (book.item(l).getNodeType() == Node.ELEMENT_NODE) {
-                                                if (Objects.equals(author.item(l).getNodeName(), "firstname")) {
-                                                    tempBook.setAuthorFirstName(author.item(l).getTextContent());
-                                                } else tempBook.setAuthorSecondName(author.item(l).getTextContent());
-                                            }
-                                        }
+                                        Element authorNode = (Element)book.item(k);
+                                        tempBook.setAuthorFirstName(authorNode.getElementsByTagName("firstname").item(0).getNodeValue());
+                                        //todo same with secondName
                                         break;
                                     }
                                     case "name": {
@@ -82,7 +78,8 @@ public class XmlTask {
                             }
                         }
                     } else {
-                        tempBook.setTakeDate(books.item(j).getAttributes().getNamedItem("day").getNodeValue() + "."
+                        Element dateNode = (Element)books.item(j);
+                        tempBook.setTakeDate(dateNode.getAttribute("day") + "."//todo the same
                                 + books.item(j).getAttributes().getNamedItem("month").getNodeValue() + "."
                                 + books.item(j).getAttributes().getNamedItem("year").getNodeValue());
                         tempReader.addBook(tempBook);
@@ -107,15 +104,16 @@ public class XmlTask {
     }
 
     public void removeBook(Reader reader, Book book) {
-        Node tempReader = searchReader(reader);
-        NodeList books = ((Element)tempReader).getElementsByTagName("book");
-        NodeList takeDates = ((Element)tempReader).getElementsByTagName("takedate");
+        Element tempReader = (Element)searchReader(reader);
+        NodeList books = (tempReader).getElementsByTagName("book");
+        NodeList takeDates = (tempReader).getElementsByTagName("takedate");
         NodeList author;
         for (int i = 0; i < books.getLength(); i++) {
             author = ((Element)books.item(i)).getElementsByTagName("author");
+            //todo разбей эти адские цепочки вызовов Заведи переменных типа Element
             if (((Element)author.item(0)).getElementsByTagName("firstname").item(0).getTextContent().equals(book.getAuthorFirstName())
                     && ((Element)author.item(0)).getElementsByTagName("secondname").item(0).getTextContent().equals(book.getAuthorSecondName())
-                    && ((Element)books.item(0)).getElementsByTagName("name").item(0).getTextContent().equals(book.getName())
+                    && ((Element)books.item(i)).getElementsByTagName("name").item(0).getTextContent().equals(book.getName()) //todo changed from 0 to i - check
                     && (Integer.parseInt(((Element)books).getElementsByTagName("printyear").item(0).getTextContent()) == book.getPrintYear())
                     && ((Element)books).getElementsByTagName("genre").item(0).getAttributes().item(0).getTextContent().equalsIgnoreCase(book.getGenre().toString())) {
                 books.item(i).getParentNode().removeChild(books.item(i));
@@ -164,6 +162,7 @@ public class XmlTask {
     private Node searchReader(Reader reader) {
         NodeList readers = document.getDocumentElement().getElementsByTagName("reader");
         for (int i = 0; i < readers.getLength(); i++) {
+            //todo Element reader
             if (readers.item(i).getAttributes().item(0).getTextContent().equals(reader.getFirstName())
                     && readers.item(i).getAttributes().item(1).getTextContent().equals(reader.getSecondName())) {
                 return readers.item(i);
