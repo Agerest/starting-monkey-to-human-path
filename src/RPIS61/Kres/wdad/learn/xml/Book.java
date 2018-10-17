@@ -21,7 +21,9 @@ public class Book {
     public Date getTakeDate() {
         return takeDate;
     }
-
+    public void setTakeDate(Date takeDate) {
+       this.takeDate = takeDate;
+    }
     public void setTakeDate(String takeDate) {
         try {
             this.takeDate = format.parse(takeDate);
