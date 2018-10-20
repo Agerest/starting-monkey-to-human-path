@@ -13,9 +13,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
@@ -81,14 +79,14 @@ public class PreferencesManager {
     }
 
     @Deprecated
-    public void setRegistryPort(String registryPort) {
-        document.getElementsByTagName("registryport").item(0).setTextContent(registryPort);
+    public void setRegistryPort(int registryPort) {
+        document.getElementsByTagName("registryport").item(0).setTextContent(Integer.toString(registryPort));
         saveXML();
     }
 
     @Deprecated
-    public String getRegistryPort() {
-        return document.getElementsByTagName("registryport").item(0).getTextContent();
+    public int getRegistryPort() {
+        return Integer.parseInt(document.getElementsByTagName("registryport").item(0).getTextContent());
     }
 
     @Deprecated
@@ -123,14 +121,9 @@ public class PreferencesManager {
     public String getClassProvider() {
         return document.getElementsByTagName("classprovider").item(0).getTextContent();
     }
-    
+
     public void setProperty(String key, String value) {
-        try {
-            document.getElementsByTagName(path.evaluate(key,document)).item(0).setTextContent(value);
-        } catch (XPathExpressionException e) {
-            e.printStackTrace();
-        }
-        saveXML();
+        properties.setProperty(key, value);
     }
 
     public String getProperty(String key) {
@@ -151,7 +144,7 @@ public class PreferencesManager {
                 PreferencesManagerConstants.usecodebaseonly, PreferencesManagerConstants.registryport};
         for(String key : keys){
             try {
-                properties.setProperty(key,document.getElementsByTagName(path.evaluate(key,document)).item(0).getTextContent());
+                properties.setProperty(key,path.evaluate(key,document));
             } catch (XPathExpressionException e) {
                 e.printStackTrace();
             }
