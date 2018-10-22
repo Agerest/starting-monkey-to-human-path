@@ -1,6 +1,8 @@
 package RPIS61.Kres.wdad.learn.rmi;
 
-public class Author {
+import java.io.Serializable;
+
+public class Author implements Serializable {
 
     private String firstName;
     private String secondName;

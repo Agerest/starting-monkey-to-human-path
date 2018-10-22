@@ -1,10 +1,11 @@
 package RPIS61.Kres.wdad.learn.rmi;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Book {
+public class Book implements Serializable {
 
     private Author author;
     private String name;
@@ -14,7 +15,7 @@ public class Book {
     private SimpleDateFormat format;
 
     public Book(Author author, String name, int printYear, Genre genre, String takeDate) {
-        format = new SimpleDateFormat("dd.mm.yyyy");
+        format = new SimpleDateFormat("dd.MM.yyyy");
         this.author = author;
         this.name = name;
         this.printYear = printYear;

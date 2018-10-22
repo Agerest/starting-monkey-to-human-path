@@ -1,8 +1,9 @@
 package RPIS61.Kres.wdad.learn.rmi;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Reader {
+public class Reader implements Serializable {
 
     private String firstName;
     private String secondName;

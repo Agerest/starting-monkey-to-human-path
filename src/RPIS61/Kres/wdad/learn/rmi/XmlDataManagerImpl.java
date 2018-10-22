@@ -1,5 +1,6 @@
 package RPIS61.Kres.wdad.learn.rmi;
 
+import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -7,7 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class XmlDataManagerImpl implements XmlDataManager {
+public class XmlDataManagerImpl implements XmlDataManager, Serializable {
 
     private ArrayList<Reader> readers;
 
@@ -21,7 +22,7 @@ public class XmlDataManagerImpl implements XmlDataManager {
     }
 
     public List<Reader> getReaders() throws RemoteException {
-        return readers.subList(0,readers.size());
+        return readers;
     }
 
     @Override
@@ -46,6 +47,7 @@ public class XmlDataManagerImpl implements XmlDataManager {
 
     @Override
     public HashMap<Book, Date> getDateReturn(Reader reader) throws RemoteException {
+        System.out.println(reader.getReturnList().get(reader.getBooksList().get(0)));
         return (HashMap<Book, Date>) reader.getReturnList();
     }
 }

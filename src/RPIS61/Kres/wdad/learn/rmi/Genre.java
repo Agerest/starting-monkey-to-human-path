@@ -1,5 +1,7 @@
 package RPIS61.Kres.wdad.learn.rmi;
 
-public enum Genre {
+import java.io.Serializable;
+
+public enum Genre implements Serializable {
     NOVEL, ODE, OPUS, ARTICLE, STORY, PLAY, SKETCH, EPOPEE, EPOS, ESSAY, OTHER
 }

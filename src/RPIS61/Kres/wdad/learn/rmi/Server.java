@@ -49,6 +49,7 @@ public class Server {
 
         } catch (Exception e) {
             System.out.println(" fail");
+            e.printStackTrace();
             System.exit(0);
         }
         while (true) {
