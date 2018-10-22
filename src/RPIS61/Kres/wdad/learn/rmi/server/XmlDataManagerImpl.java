@@ -1,4 +1,8 @@
-package RPIS61.Kres.wdad.learn.rmi;
+package RPIS61.Kres.wdad.learn.rmi.server;
+
+import RPIS61.Kres.wdad.learn.rmi.Book;
+import RPIS61.Kres.wdad.learn.rmi.Reader;
+import RPIS61.Kres.wdad.learn.rmi.XmlDataManager;
 
 import java.io.Serializable;
 import java.rmi.Remote;

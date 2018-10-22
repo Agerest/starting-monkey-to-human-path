@@ -1,10 +1,11 @@
-package RPIS61.Kres.wdad.learn.rmi;
+package RPIS61.Kres.wdad.learn.rmi.server;
 
 import RPIS61.Kres.wdad.data.managers.PreferencesManager;
 import RPIS61.Kres.wdad.utils.PreferencesManagerConstants;
 
 import java.rmi.RMISecurityManager;
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -15,9 +16,12 @@ public class Server {
     private static final int sleepTime = Integer.MAX_VALUE;
     private static int port;
     private static String address;
+    private static ShutdownHook shutdownHook;
+    private static PreferencesManager pm;
 
     public static void main(String... args) throws Exception {
-        PreferencesManager pm = PreferencesManager.getInstance();
+        shutdownHook = new ShutdownHook();
+        pm = PreferencesManager.getInstance();
         port = Integer.parseInt(pm.getProperty(PreferencesManagerConstants.registryport));
         address = pm.getProperty(PreferencesManagerConstants.registryaddress);
         System.setProperty("java.security.policy", pm.getProperty(PreferencesManagerConstants.policypath));
@@ -54,6 +58,12 @@ public class Server {
         }
         while (true) {
             Thread.sleep(sleepTime);
+        }
+    }
+
+    static class ShutdownHook extends Thread {
+        public void run() {
+            pm.removeBindedObject(bindName);
         }
     }
 

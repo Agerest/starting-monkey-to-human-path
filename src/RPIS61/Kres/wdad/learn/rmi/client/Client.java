@@ -1,6 +1,7 @@
-package RPIS61.Kres.wdad.learn.rmi;
+package RPIS61.Kres.wdad.learn.rmi.client;
 
 import RPIS61.Kres.wdad.data.managers.PreferencesManager;
+import RPIS61.Kres.wdad.learn.rmi.*;
 import RPIS61.Kres.wdad.utils.PreferencesManagerConstants;
 
 import java.rmi.RMISecurityManager;
@@ -38,7 +39,7 @@ public class Client {
 
     private static void test(XmlDataManager xmlDataManager) throws RemoteException {
         Reader reader1 = new Reader("1","1");
-        Book book = new Book(new Author("11","11"),"11",1999,Genre.EPOPEE,"12.12.2017");
+        Book book = new Book(new Author("11","11"),"11",1999, Genre.EPOPEE,"12.12.2017");
         reader1.addBook(book);
         reader1.addBook(new Book(new Author("12","12"),"12",1989,Genre.EPOPEE,"12.12.2016"));
         Reader reader2 = new Reader("2","2");
