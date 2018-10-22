@@ -15,7 +15,7 @@ public class Book {
     private SimpleDateFormat format;
 
     public Book() {
-        format = new SimpleDateFormat("dd.mm.yyyy");
+        format = new SimpleDateFormat("dd.MM.yyyy");
     }
 
     public Date getTakeDate() {
