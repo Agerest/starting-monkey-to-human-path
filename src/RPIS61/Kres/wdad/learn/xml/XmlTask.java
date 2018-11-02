@@ -39,7 +39,7 @@ public class XmlTask {
         NodeList readers = document.getDocumentElement().getElementsByTagName("reader");
         Book tempBook = new Book();
         Reader tempReader;
-        Element reader; //todo Element
+        Element reader;
         NodeList books;
         NodeList book;
         Element authorNode;
@@ -47,8 +47,8 @@ public class XmlTask {
         for (int i = 0; i < readers.getLength(); i++) {
             tempReader = new Reader();
             reader = (Element) readers.item(i);
-            tempReader.setFirstName(reader.getAttribute("firstname")); //todo reader.getAttribute("firstname")
-            tempReader.setSecondName(reader.getAttribute("secondname")); //todo reader.getAttribute("secondname")
+            tempReader.setFirstName(reader.getAttribute("firstname"));
+            tempReader.setSecondName(reader.getAttribute("secondname"));
             books = reader.getChildNodes();
             for (int j = 0; j < books.getLength(); j++) {
                 if (books.item(j).getNodeName().equals("book")) {
@@ -60,7 +60,6 @@ public class XmlTask {
                                 authorNode = (Element) book.item(k);
                                 tempBook.setAuthorFirstName(authorNode.getElementsByTagName("firstname").item(0).getTextContent());
                                 tempBook.setAuthorSecondName(authorNode.getElementsByTagName("secondname").item(0).getTextContent());
-                                //todo same with secondName
                                 break;
                             }
                             case "name": {
@@ -80,7 +79,8 @@ public class XmlTask {
                 }
                 if (books.item(j).getNodeName().equals("takedate")) {
                     dateNode = (Element) books.item(j);
-                    tempBook.setTakeDate(dateNode.getAttribute("day") + "."//todo the same
+                    //todo String.format
+                    tempBook.setTakeDate(dateNode.getAttribute("day") + "."
                             + dateNode.getAttribute("month") + "."
                             + dateNode.getAttribute("year"));
                     tempReader.addBook(tempBook);
@@ -116,10 +116,9 @@ public class XmlTask {
             genreNode = (Element) ((Element) books.item(i)).getElementsByTagName("genre").item(0);
             printYearNode = (Element) ((Element)books.item(i)).getElementsByTagName("printyear").item(0);
             nameNode = (Element)((Element)books.item(i)).getElementsByTagName("name").item(0);
-            //todo разбей эти адские цепочки вызовов Заведи переменных типа Element
             if ((author.getElementsByTagName("firstname").item(0).getTextContent().equals(book.getAuthorFirstName()))
                     && (author.getElementsByTagName("secondname").item(0).getTextContent().equals(book.getAuthorSecondName()))
-                    && (nameNode.getTextContent().equals(book.getName())) //todo changed from 0 to i - check
+                    && (nameNode.getTextContent().equals(book.getName()))
                     && (Integer.parseInt((printYearNode.getTextContent())) == book.getPrintYear())
                     && (genreNode.getAttribute("value").equalsIgnoreCase(book.getGenre().toString()))) {
                 books.item(i).getParentNode().removeChild(books.item(i));
@@ -170,7 +169,6 @@ public class XmlTask {
         NodeList readers = document.getDocumentElement().getElementsByTagName("reader");
         Element readerNode;
         for (int i = 0; i < readers.getLength(); i++) {
-            //todo Element reader
             readerNode = (Element)readers.item(i);
             if (readerNode.getAttribute("firstname").equals(reader.getFirstName())
                     && readerNode.getAttribute("secondname").equals(reader.getSecondName())) {
