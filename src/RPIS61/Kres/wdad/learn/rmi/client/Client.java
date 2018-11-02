@@ -1,15 +1,17 @@
 package RPIS61.Kres.wdad.learn.rmi.client;
 
 import RPIS61.Kres.wdad.data.managers.PreferencesManager;
+import RPIS61.Kres.wdad.data.model.Author;
+import RPIS61.Kres.wdad.data.model.Book;
+import RPIS61.Kres.wdad.data.model.Genre;
+import RPIS61.Kres.wdad.data.model.Reader;
 import RPIS61.Kres.wdad.learn.rmi.*;
 import RPIS61.Kres.wdad.utils.PreferencesManagerConstants;
 
 import java.rmi.RMISecurityManager;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
 
 public class Client {
 

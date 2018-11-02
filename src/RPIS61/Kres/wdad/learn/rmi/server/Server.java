@@ -27,7 +27,7 @@ public class Server {
         System.setProperty("java.security.policy", pm.getProperty(PreferencesManagerConstants.policypath));
         System.setProperty("java.rmi.server.useCodebaseOnly", pm.getProperty(PreferencesManagerConstants.usecodebaseonly));
         System.setProperty("java.rmi.server.hostname", address);
-        System.setSecurityManager(new RMISecurityManager());
+        System.setSecurityManager(new SecurityManager());
         try {
             System.out.print("Starting registry...");
             final Registry registry;
@@ -41,10 +41,10 @@ public class Server {
             }
 
             final XmlDataManagerImpl service = new XmlDataManagerImpl();
-            Remote stub = UnicastRemoteObject.exportObject(service, 0);
+            UnicastRemoteObject.exportObject(service, 0);
 
             System.out.print("Binding service...");
-            registry.bind(bindName, stub);
+            registry.bind(bindName, service);
             System.out.println(" OK");
 
             pm.addBindedObject(bindName,"XmlDataManager");

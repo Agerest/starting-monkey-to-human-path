@@ -1,4 +1,4 @@
-package RPIS61.Kres.wdad.learn.rmi;
+package RPIS61.Kres.wdad.data.model;
 
 import java.io.Serializable;
 import java.util.*;

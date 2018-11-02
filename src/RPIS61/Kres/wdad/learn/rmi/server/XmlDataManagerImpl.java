@@ -1,17 +1,17 @@
 package RPIS61.Kres.wdad.learn.rmi.server;
 
-import RPIS61.Kres.wdad.learn.rmi.Book;
-import RPIS61.Kres.wdad.learn.rmi.Reader;
+import RPIS61.Kres.wdad.data.model.Book;
+import RPIS61.Kres.wdad.data.model.Reader;
 import RPIS61.Kres.wdad.learn.rmi.XmlDataManager;
 
 import java.io.Serializable;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+//todo здесь внутри лежит XMLTask и методы обращаются к нему
 public class XmlDataManagerImpl implements XmlDataManager, Serializable {
 
     private ArrayList<Reader> readers;
