@@ -1,21 +1,26 @@
-package RPIS61.Kres.wdad.learn.xml;
+package RPIS61.Kres.wdad.data.model;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Book {
+public class Book implements Serializable {
 
-    private String authorFirstName;
-    private String authorSecondName;
+    private Author author;
     private String name;
     private int printYear;
     private Genre genre;
     private Date takeDate;
     private SimpleDateFormat format;
 
-    public Book() {
+    public Book(Author author, String name, int printYear, Genre genre, String takeDate) {
         format = new SimpleDateFormat("dd.MM.yyyy");
+        this.author = author;
+        this.name = name;
+        this.printYear = printYear;
+        this.genre = genre;
+        setTakeDate(takeDate);
     }
 
     public Date getTakeDate() {
@@ -32,14 +37,6 @@ public class Book {
         }
     }
 
-    public void setAuthorFirstName(String authorFirstName) {
-        this.authorFirstName = authorFirstName;
-    }
-
-    public void setAuthorSecondName(String authorSecondName) {
-        this.authorSecondName = authorSecondName;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -52,12 +49,12 @@ public class Book {
         this.genre = genre;
     }
 
-    public String getAuthorFirstName() {
-        return authorFirstName;
+    public Author getAuthor() {
+        return author;
     }
 
-    public String getAuthorSecondName() {
-        return authorSecondName;
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 
     public String getName() {
@@ -75,8 +72,7 @@ public class Book {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Автор: ").append(authorFirstName).append(" ")
-                .append(authorSecondName).append(", Название: ")
+        sb.append("Автор: ").append(author.toString()).append(", Название: ")
                 .append(name).append(", Год издания: ")
                 .append(printYear).append(", Жанр: ")
                 .append(genre).append(", Дата выдачи: ")
@@ -88,8 +84,7 @@ public class Book {
     public boolean equals(Object obj) {
         if (obj == null) return false;
         if (!(obj instanceof Book)) return false;
-        return authorFirstName.equals(((Book) obj).authorFirstName)
-                && authorSecondName.equals(((Book) obj).authorSecondName)
+        return author.equals(((Book) obj).getAuthor())
                 && name.equals(((Book) obj).name)
                 && printYear==((Book) obj).printYear
                 && genre.equals(((Book) obj).genre);
