@@ -1,8 +1,8 @@
 package RPIS61.Kres.wdad.learn.rmi.server;
 
-import RPIS61.Kres.wdad.data.model.Book;
-import RPIS61.Kres.wdad.data.model.Reader;
+import RPIS61.Kres.wdad.data.model.*;
 import RPIS61.Kres.wdad.learn.rmi.XmlDataManager;
+import RPIS61.Kres.wdad.learn.xml.XmlTask;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -13,45 +13,34 @@ import java.util.List;
 
 //todo здесь внутри лежит XMLTask и методы обращаются к нему
 public class XmlDataManagerImpl implements XmlDataManager, Serializable {
+    private XmlTask xmlTask;
 
-    private ArrayList<Reader> readers;
-
-    XmlDataManagerImpl() {
-        readers = new ArrayList<>();
+    XmlDataManagerImpl() throws RemoteException {
+        xmlTask = new XmlTask();
     }
 
-    @Override
-    public void addReader(Reader reader) throws RemoteException {
-        readers.add(reader);
-    }
 
     public List<Reader> getReaders() throws RemoteException {
-        return readers;
+        return xmlTask.getReaders();
     }
 
     @Override
     public List<Reader> negligentReaders() throws RemoteException {
-        List<Reader> result = new ArrayList<>();
-        for (Reader reader : readers) {
-            if (reader.isNegligent())
-                result.add(reader);
-        }
-        return result;
+        return xmlTask.negligentReaders();
     }
 
     @Override
     public void removeBook(Reader reader, Book book)throws RemoteException {
-        reader.removeBook(book);
+        xmlTask.removeBook(reader,book);
     }
 
     @Override
     public void addBook(Reader reader, Book book) throws RemoteException {
-        reader.addBook(book);
+        xmlTask.addBook(reader,book);
     }
 
     @Override
     public HashMap<Book, Date> getDateReturn(Reader reader) throws RemoteException {
-        System.out.println(reader.getReturnList().get(reader.getBooksList().get(0)));
         return (HashMap<Book, Date>) reader.getReturnList();
     }
 }

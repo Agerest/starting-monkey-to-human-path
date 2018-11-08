@@ -3,24 +3,23 @@ package RPIS61.Kres.wdad.learn.rmi.server;
 import RPIS61.Kres.wdad.data.managers.PreferencesManager;
 import RPIS61.Kres.wdad.utils.PreferencesManagerConstants;
 
-import java.rmi.RMISecurityManager;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Scanner;
 
 public class Server {
 
-    private static final String bindName = "XmlDataManager";
-    private static final int sleepTime = Integer.MAX_VALUE;
+    private static final String BIND_NAME = "XmlDataManager";
     private static int port;
     private static String address;
     private static ShutdownHook shutdownHook;
     private static PreferencesManager pm;
 
     public static void main(String... args) throws Exception {
+        Scanner scanner = new Scanner(System.in);
         shutdownHook = new ShutdownHook();
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
         pm = PreferencesManager.getInstance();
         port = Integer.parseInt(pm.getProperty(PreferencesManagerConstants.registryport));
         address = pm.getProperty(PreferencesManagerConstants.registryaddress);
@@ -44,10 +43,10 @@ public class Server {
             UnicastRemoteObject.exportObject(service, 0);
 
             System.out.print("Binding service...");
-            registry.bind(bindName, service);
+            registry.bind(BIND_NAME, service);
             System.out.println(" OK");
 
-            pm.addBindedObject(bindName,"XmlDataManager");
+            pm.addBindedObject(BIND_NAME,"XmlDataManager");
 
             System.out.println("Server working...");
 
@@ -57,13 +56,15 @@ public class Server {
             System.exit(0);
         }
         while (true) {
-            Thread.sleep(sleepTime);
+            switch (scanner.nextLine()){
+                case "quit": System.exit(0);
+            }
         }
     }
 
     static class ShutdownHook extends Thread {
         public void run() {
-            pm.removeBindedObject(bindName);
+            pm.removeBindedObject(BIND_NAME);
         }
     }
 

@@ -12,11 +12,9 @@ public class Reader implements Serializable {
     private final long MILLISECONDS_IN_2_WEEKS = 7*24 * 60 * 60 * 1000 *2;
 
 
-    public Reader(String firstName, String secondName) {
+    public Reader() {
         booksList = new ArrayList<>();
         bookReturnList = new HashMap<>();
-        this.firstName = firstName;
-        this.secondName = secondName;
     }
 
     public boolean isNegligent() {

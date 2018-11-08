@@ -14,13 +14,8 @@ public class Book implements Serializable {
     private Date takeDate;
     private SimpleDateFormat format;
 
-    public Book(Author author, String name, int printYear, Genre genre, String takeDate) {
+    public Book() {
         format = new SimpleDateFormat("dd.MM.yyyy");
-        this.author = author;
-        this.name = name;
-        this.printYear = printYear;
-        this.genre = genre;
-        setTakeDate(takeDate);
     }
 
     public Date getTakeDate() {

@@ -1,10 +1,13 @@
 package RPIS61.Kres.wdad.learn.xml;
 
 import java.io.File;
+import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 
+import RPIS61.Kres.wdad.data.model.*;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.*;
@@ -15,13 +18,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-public class XmlTask {
+
+public class XmlTask implements Serializable {
 
     private static ArrayList<Reader> readers;
     private static final String XML_PATH = "src\\RPIS61\\Kres\\wdad\\learn\\xml\\library.xml";
     private Document document;
 
-    public XmlTask() {
+    public XmlTask() throws RemoteException {
         readers = new ArrayList<>();
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -35,7 +39,7 @@ public class XmlTask {
 
     }
 
-    private void readXML() {
+    private void readXML() throws RemoteException{
         NodeList readers = document.getDocumentElement().getElementsByTagName("reader");
         Book tempBook = new Book();
         Reader tempReader;
@@ -58,8 +62,7 @@ public class XmlTask {
                         switch (book.item(k).getNodeName()) {
                             case "author": {
                                 authorNode = (Element) book.item(k);
-                                tempBook.setAuthorFirstName(authorNode.getElementsByTagName("firstname").item(0).getTextContent());
-                                tempBook.setAuthorSecondName(authorNode.getElementsByTagName("secondname").item(0).getTextContent());
+                                tempBook.setAuthor(new Author(authorNode.getElementsByTagName("firstname").item(0).getTextContent(),authorNode.getElementsByTagName("secondname").item(0).getTextContent()));
                                 break;
                             }
                             case "name": {
@@ -79,10 +82,9 @@ public class XmlTask {
                 }
                 if (books.item(j).getNodeName().equals("takedate")) {
                     dateNode = (Element) books.item(j);
-                    //todo String.format
-                    tempBook.setTakeDate(dateNode.getAttribute("day") + "."
-                            + dateNode.getAttribute("month") + "."
-                            + dateNode.getAttribute("year"));
+                    tempBook.setTakeDate(new StringBuilder().append(dateNode.getAttribute("day")).append(".")
+                            .append(dateNode.getAttribute("month")).append(".")
+                            .append(dateNode.getAttribute("year")).toString());
                     tempReader.addBook(tempBook);
                 }
             }
@@ -90,7 +92,7 @@ public class XmlTask {
         }
     }
 
-    public List<Reader> negligentReaders() {
+    public List<Reader> negligentReaders()throws RemoteException {
         List<Reader> result = new ArrayList<>();
         for (Reader reader : readers) {
             if (reader.isNegligent())
@@ -103,7 +105,7 @@ public class XmlTask {
         return reader.getBooksList();
     }
 
-    public void removeBook(Reader reader, Book book) {
+    public void removeBook(Reader reader, Book book)throws RemoteException {
         Element tempReader = (Element)searchReader(reader);
         NodeList books = (tempReader).getElementsByTagName("book");
         NodeList takeDates = (tempReader).getElementsByTagName("takedate");
@@ -116,8 +118,8 @@ public class XmlTask {
             genreNode = (Element) ((Element) books.item(i)).getElementsByTagName("genre").item(0);
             printYearNode = (Element) ((Element)books.item(i)).getElementsByTagName("printyear").item(0);
             nameNode = (Element)((Element)books.item(i)).getElementsByTagName("name").item(0);
-            if ((author.getElementsByTagName("firstname").item(0).getTextContent().equals(book.getAuthorFirstName()))
-                    && (author.getElementsByTagName("secondname").item(0).getTextContent().equals(book.getAuthorSecondName()))
+            if ((author.getElementsByTagName("firstname").item(0).getTextContent().equals(book.getAuthor().getFirstName()))
+                    && (author.getElementsByTagName("secondname").item(0).getTextContent().equals(book.getAuthor().getSecondName()))
                     && (nameNode.getTextContent().equals(book.getName()))
                     && (Integer.parseInt((printYearNode.getTextContent())) == book.getPrintYear())
                     && (genreNode.getAttribute("value").equalsIgnoreCase(book.getGenre().toString()))) {
@@ -130,14 +132,14 @@ public class XmlTask {
         reader.removeBook(book);
     }
 
-    public void addBook(Reader reader, Book book) {
+    public void addBook(Reader reader, Book book) throws RemoteException{
         Element tempBook = document.createElement("book");
         Element author = document.createElement("author");
         Element tempElement = document.createElement("firstname");
-        tempElement.setTextContent(book.getAuthorFirstName());
+        tempElement.setTextContent(book.getAuthor().getFirstName());
         author.appendChild(tempElement);
         tempElement = document.createElement("secondname");
-        tempElement.setTextContent(book.getAuthorSecondName());
+        tempElement.setTextContent(book.getAuthor().getSecondName());
         author.appendChild(tempElement);
         tempBook.appendChild(author);
         tempElement = document.createElement("name");
@@ -161,11 +163,11 @@ public class XmlTask {
         saveXML();
     }
 
-    public static List<Reader> getReaders() {
-        return readers.subList(0,readers.size());
+    public static List<Reader> getReaders() throws RemoteException {
+        return readers;//.subList(0,readers.size());
     }
 
-    private Node searchReader(Reader reader) {
+    private Node searchReader(Reader reader) throws RemoteException{
         NodeList readers = document.getDocumentElement().getElementsByTagName("reader");
         Element readerNode;
         for (int i = 0; i < readers.getLength(); i++) {
@@ -178,7 +180,7 @@ public class XmlTask {
         return null;
     }
 
-    private void saveXML() {
+    private void saveXML()throws RemoteException {
         try {
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             Result output = new StreamResult(new File(XML_PATH));
