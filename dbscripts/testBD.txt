@@ -1,0 +1,138 @@
+INSERT INTO `agerest`.`authors`
+(`id`,
+`first_name`,
+`second_name`,
+`birth_date`)
+VALUES
+(1,
+"John",
+"Tolkien",
+"1892-01-03");
+INSERT INTO `agerest`.`authors`
+(`id`,
+`first_name`,
+`second_name`,
+`birth_date`)
+VALUES
+(2,
+"Ray",
+"Bradbury",
+"1920-08-22");
+
+INSERT INTO `agerest`.`books`
+(`id`,
+`name`,
+`description`,
+`print_year`)
+VALUES
+(1,
+"Fahrenheit 451",
+"ololo",
+1953);
+INSERT INTO `agerest`.`books`
+(`id`,
+`name`,
+`description`,
+`print_year`)
+VALUES
+(2,
+"The Hobbit, or There and Back Again",
+"lalala",
+1937);
+
+INSERT INTO `agerest`.`books_authors`
+(`id`,
+`authors_id`,
+`books_id`)
+VALUES
+(1,
+2,
+1);
+INSERT INTO `agerest`.`books_authors`
+(`id`,
+`authors_id`,
+`books_id`)
+VALUES
+(2,
+1,
+2);
+
+INSERT INTO `agerest`.`genres`
+(`id`,
+`name`,
+`description`)
+VALUES
+(1,
+"dystopia",
+"eeee");
+INSERT INTO `agerest`.`genres`
+(`id`,
+`name`,
+`description`)
+VALUES
+(2,
+"fantasy",
+"yyyy");
+
+INSERT INTO `agerest`.`readers`
+(`id`,
+`first_name`,
+`second_name`,
+`birth_date`)
+VALUES
+(1,
+"Vasya",
+"Pupkin",
+"1978-10-18");
+INSERT INTO `agerest`.`readers`
+(`id`,
+`first_name`,
+`second_name`,
+`birth_date`)
+VALUES
+(2,
+"Ivan",
+"Ivanov",
+"1980-01-27");
+
+INSERT INTO `agerest`.`books_genres`
+(`id`,
+`books_id`,
+`genres_id`)
+VALUES
+(1,
+1,
+1);
+INSERT INTO `agerest`.`books_genres`
+(`id`,
+`books_id`,
+`genres_id`)
+VALUES
+(2,
+2,
+2);
+
+INSERT INTO `agerest`.`books_readers`
+(`id`,
+`books_dictionary_id`,
+`readers_id`,
+`take_date`,
+`return_date`)
+VALUES
+(1,
+1,
+2,
+"2018-11-12",
+"2018-11-20");
+INSERT INTO `agerest`.`books_readers`
+(`id`,
+`books_dictionary_id`,
+`readers_id`,
+`take_date`,
+`return_date`)
+VALUES
+(2,
+2,
+1,
+"2018-11-11",
+"2018-11-28");

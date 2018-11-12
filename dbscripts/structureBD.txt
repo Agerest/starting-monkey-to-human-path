@@ -1,0 +1,60 @@
+CREATE TABLE `authors` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(50) NOT NULL,
+  `second_name` varchar(50) NOT NULL,
+  `birth_date` date NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `books` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(45) NOT NULL,
+  `print_year` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `books_authors` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `authors_id` int(11) NOT NULL,
+  `books_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `authors_id_idx` (`authors_id`),
+  KEY `books_id_idx` (`books_id`),
+  CONSTRAINT `authors_id` FOREIGN KEY (`authors_id`) REFERENCES `authors` (`id`),
+  CONSTRAINT `books_id` FOREIGN KEY (`books_id`) REFERENCES `books` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `books_genres` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `books_id` int(11) NOT NULL,
+  `genres_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `books_id_idx` (`books_id`),
+  KEY `books_id_idx2` (`books_id`),
+  KEY `genres_id_idx` (`genres_id`),
+  CONSTRAINT `books_idd` FOREIGN KEY (`books_id`) REFERENCES `books` (`id`),
+  CONSTRAINT `genres_id` FOREIGN KEY (`genres_id`) REFERENCES `genres` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `books_readers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `books_dictionary_id` int(11) NOT NULL,
+  `readers_id` int(11) NOT NULL,
+  `take_date` date NOT NULL,
+  `return_date` date NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `books_dictionary_id_idx` (`books_dictionary_id`),
+  KEY `readers_id_idx` (`readers_id`),
+  CONSTRAINT `books_dictionary_id` FOREIGN KEY (`books_dictionary_id`) REFERENCES `books` (`id`),
+  CONSTRAINT `readers_id` FOREIGN KEY (`readers_id`) REFERENCES `readers` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `genres` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) NOT NULL,
+  `description` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `readers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(50) NOT NULL,
+  `second_name` varchar(50) NOT NULL,
+  `birth_date` date NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
