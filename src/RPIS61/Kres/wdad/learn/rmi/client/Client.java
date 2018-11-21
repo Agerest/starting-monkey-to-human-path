@@ -1,8 +1,7 @@
 package RPIS61.Kres.wdad.learn.rmi.client;
 
+import RPIS61.Kres.wdad.data.managers.DataManager;
 import RPIS61.Kres.wdad.data.managers.PreferencesManager;
-import RPIS61.Kres.wdad.data.model.*;
-import RPIS61.Kres.wdad.learn.rmi.*;
 import RPIS61.Kres.wdad.utils.PreferencesManagerConstants;
 
 import java.rmi.RMISecurityManager;
@@ -12,7 +11,7 @@ import java.rmi.registry.Registry;
 
 public class Client {
 
-    private static final String BIND_NAME = "XmlDataManager";
+    private static final String BIND_NAME = "DataManager";
     private static int port;
     private static String address;
 
@@ -27,7 +26,7 @@ public class Client {
         try {
             System.out.print("Authorization...");
             Registry registry = LocateRegistry.getRegistry(address, port);
-            XmlDataManager service = (XmlDataManager) registry.lookup(BIND_NAME);
+            DataManager service = (DataManager) registry.lookup(BIND_NAME);
             System.out.println(" OK");
             test(service);
         } catch (Exception e) {
@@ -36,8 +35,8 @@ public class Client {
         }
     }
 
-    private static void test(XmlDataManager xmlDataManager) throws RemoteException {
-        xmlDataManager.getReaders().forEach(System.out::println);
+    private static void test(DataManager dataManager) throws RemoteException {
+        dataManager.getReaders().forEach(System.out::println);
     }
 
 }

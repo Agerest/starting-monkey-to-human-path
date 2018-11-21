@@ -1,21 +1,20 @@
 package RPIS61.Kres.wdad.learn.rmi.server;
 
 import RPIS61.Kres.wdad.data.model.*;
-import RPIS61.Kres.wdad.learn.rmi.XmlDataManager;
+import RPIS61.Kres.wdad.data.managers.DataManager;
 import RPIS61.Kres.wdad.learn.xml.XmlTask;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 //todo здесь внутри лежит XMLTask и методы обращаются к нему
-public class XmlDataManagerImpl implements XmlDataManager, Serializable {
+public class DataManagerImpl implements DataManager, Serializable {
     private XmlTask xmlTask;
 
-    XmlDataManagerImpl() throws RemoteException {
+    DataManagerImpl() throws RemoteException {
         xmlTask = new XmlTask();
     }
 

@@ -1,20 +1,51 @@
 package RPIS61.Kres.wdad.data.model;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Reader implements Serializable {
 
     private String firstName;
     private String secondName;
+    private Date birthDate;
     private ArrayList<Book> booksList;
     private HashMap<Book,Date> bookReturnList;
     private final long MILLISECONDS_IN_2_WEEKS = 7*24 * 60 * 60 * 1000 *2;
+    private SimpleDateFormat format;
+    private int ID;
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
 
 
     public Reader() {
         booksList = new ArrayList<>();
         bookReturnList = new HashMap<>();
+        format = new SimpleDateFormat("yyyy-MM-dd");
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public void setBirthDate(String birthDate) {
+        try {
+            this.birthDate = format.parse(birthDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isNegligent() {

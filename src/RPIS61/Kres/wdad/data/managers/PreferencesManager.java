@@ -141,7 +141,11 @@ public class PreferencesManager {
     private void readProperties() {
         String[] keys = {PreferencesManagerConstants.classprovider,PreferencesManagerConstants.createregistry,
                 PreferencesManagerConstants.policypath, PreferencesManagerConstants.registryaddress,
-                PreferencesManagerConstants.usecodebaseonly, PreferencesManagerConstants.registryport};
+                PreferencesManagerConstants.usecodebaseonly, PreferencesManagerConstants.registryport,
+                PreferencesManagerConstants.classname, PreferencesManagerConstants.DBName,
+                PreferencesManagerConstants.drivertype, PreferencesManagerConstants.pass,
+                PreferencesManagerConstants.hostName, PreferencesManagerConstants.port,
+                PreferencesManagerConstants.user};
         for(String key : keys){
             try {
                 properties.setProperty(key,path.evaluate(key,document));

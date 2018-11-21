@@ -13,9 +13,20 @@ public class Book implements Serializable {
     private Genre genre;
     private Date takeDate;
     private SimpleDateFormat format;
+    private String Description;
+    private int ID;
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
 
     public Book() {
-        format = new SimpleDateFormat("dd.MM.yyyy");
+        format = new SimpleDateFormat("yyyy-MM-dd");
     }
 
     public Date getTakeDate() {
@@ -30,6 +41,14 @@ public class Book implements Serializable {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
     }
 
     public void setName(String name) {

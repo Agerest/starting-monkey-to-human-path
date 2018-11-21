@@ -1,4 +1,4 @@
-package RPIS61.Kres.wdad.learn.rmi;
+package RPIS61.Kres.wdad.data.managers;
 
 import RPIS61.Kres.wdad.data.model.*;
 
@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public interface XmlDataManager extends Remote {
+public interface DataManager extends Remote {
 
     public List<Reader> negligentReaders() throws RemoteException;
     public void removeBook (Reader reader, Book book)throws RemoteException;
