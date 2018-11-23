@@ -17,166 +17,239 @@ import java.util.List;
 
 public class JDBCDataManager implements DataManager {
 
-    private Statement statement;
-    //todo - в топку
-    private List<Reader> readers;
-    private List<Book> books;
-    private List<Author> authors;
-    private List<Genres> genres;
-    private SimpleDateFormat format;
+    private DataSource dataSource;
 
     public JDBCDataManager() {
         try {
-            format = new SimpleDateFormat("yyyy-MM-dd");
-            readers = new ArrayList<>();
-            books = new ArrayList<>();
-            authors = new ArrayList<>();
-            genres = new ArrayList<>();
-            DataSource dataSource = DataSourceFactory.createDataSource();
-            Connection connection = dataSource.getConnection();
-            statement = connection.createStatement();
-            //readBD();
+            dataSource = DataSourceFactory.createDataSource();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private void readBD() throws SQLException {
-        /* todo в топку =))))
-        ResultSet resul = statement.executeQuery("select * from readers");
-        Reader reader;
-        while (resul.next()) {
-            reader = new Reader();
-            reader.setID(resul.getInt(1));
-            reader.setFirstName(resul.getString(2));
-            reader.setSecondName(resul.getString(3));
-            reader.setBirthDate(resul.getString(4));
-            readers.add(reader);
+    private void setAuthor(Book book) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("select authors_id, first_name, second_name, birth_date from books_authors JOIN authors ON (authors.ID = books_authors.authors_id) where books_id = ?");
+            statement.setInt(1,book.getID());
+            result = statement.executeQuery();
+            result.next();
+            Author author = new Author();
+            author.setID(result.getInt(1));
+            author.setFirstName(result.getString(2));
+            author.setSecondName(result.getString(3));
+            author.setBirthDate(result.getDate(4));
+            book.setAuthor(author);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        resul = statement.executeQuery("select * from authors");
-        Author author;
-        while (resul.next()) {
-            author = new Author();
-            author.setID(resul.getInt(1));
-            author.setFirstName(resul.getString(2));
-            author.setSecondName(resul.getString(3));
-            author.setBirthDate(resul.getString(4));
-            authors.add(author);
+        finally {
+            try { result.close(); } catch (Exception e) { /* ignored */ }
+            try { statement.close(); } catch (Exception e) { /* ignored */ }
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
-        resul = statement.executeQuery("select * from genres");
-        Genres genres;
-        while (resul.next()) {
-            genres = new Genres();
-            genres.setID(resul.getInt(1));
-            genres.setName(resul.getString(2));
-            genres.setDescription(resul.getString(3));
-            this.genres.add(genres);
-        }
-        resul = statement.executeQuery("select * from books");
-        Book book;
-        while (resul.next()) {
-            book = new Book();
-            book.setID(resul.getInt(1));
-            book.setName(resul.getString(2));
-            book.setDescription(resul.getString(3));
-            book.setPrintYear(Integer.parseInt(resul.getString(4)));
-            books.add(book);
-        }
-        */
     }
 
-    private Reader currentReader(int ID) {
-        for (Reader reader: readers) {
-            if (reader.getID()==ID) return reader;
+    private void setGenre(Book book) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("select genres_id, name, description from books_genres JOIN genres ON (genres.ID = books_genres.genres_id) where books_id = ?");
+            statement.setInt(1, book.getID());
+            result = statement.executeQuery();
+            result.next();
+            Genres genre = new Genres();
+            genre.setID(result.getInt(1));
+            genre.setName(result.getString(2));
+            genre.setDescription(result.getString(3));
+            book.setGenres(genre);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return null;
+        finally {
+            try { result.close(); } catch (Exception e) { /* ignored */ }
+            try { statement.close(); } catch (Exception e) { /* ignored */ }
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
+        }
     }
 
-    private Book currentBook(int ID) {
-        for (Book book: books) {
-            if (book.getID()==ID) return book;
+    private void setBooks(Reader reader) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("select books_dictionary_id, take_date, name, description, print_year from books_readers JOIN books ON (books.ID = books_readers.books_dictionary_id) where readers_id = ?");
+            statement.setInt(1, reader.getID());
+            result = statement.executeQuery();
+            Book book;
+            while (result.next()) {
+                book = new Book();
+                book.setID(result.getInt(1));
+                book.setTakeDate(result.getDate(2));
+                book.setName(result.getString(3));
+                book.setDescription(result.getString(4));
+                book.setPrintYear(result.getInt(5));
+                setAuthor(book);
+                setGenre(book);
+                reader.addBook(book);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return null;
+        finally {
+            try { result.close(); } catch (Exception e) { /* ignored */ }
+            try { statement.close(); } catch (Exception e) { /* ignored */ }
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
+        }
     }
 
     @Override
     public List<Reader> negligentReaders() throws RemoteException {
         //todo getCOnnection(), createStatement, process, close Statement, close connection
         List<Reader> negligentReaders = new ArrayList<>();
-        //long MILLISECONDS_IN_2_WEEKS = 7 * 24 * 60 * 60 * 1000 * 2;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
         try {
-            ResultSet books_readers = statement.executeQuery("select * from readers JOIN books_readers ON (readers.ID = book_readers.reader_id) where (CURRENT_DATE - DATE) > 12");
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("select readers_id, first_name, second_name, birth_date from readers JOIN books_readers ON (readers.ID = books_readers.readers_id) where (CURRENT_DATE - take_date) > ?");
+            int countDay = 14;
+            statement.setInt(1, countDay);
+            result = statement.executeQuery();
                 //todo создаешь reader-ов и набиваешь negligentReaders
-
+            Reader reader;
+            while (result.next()) {
+                reader = new Reader();
+                reader.setID(result.getInt(1));
+                reader.setFirstName(result.getString(2));
+                reader.setSecondName(result.getString(3));
+                reader.setBirthDate(result.getDate(4));
+                setBooks(reader);
+                negligentReaders.add(reader);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        finally {
+            try { result.close(); } catch (Exception e) { /* ignored */ }
+            try { statement.close(); } catch (Exception e) { /* ignored */ }
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
+        }
         return negligentReaders;
-
     }
 
     @Override
     public void removeBook(Reader reader, Book book) throws RemoteException {
+        Connection connection = null;
+        PreparedStatement statement = null;
         try {
             //todo preparedStatement
-            PreparedStatement statement;
-            ("delete from books_readers where readers_id=? and books_dictionary_id=?");
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("delete from books_readers where readers_id=? and books_dictionary_id=?");
             statement.setInt(1, reader.getID());
             statement.setInt(2, book.getID());
             statement.executeUpdate();
+            reader.removeBook(book);
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        finally {
+            try { statement.close(); } catch (Exception e) { /* ignored */ }
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
     }
 
     @Override
     public void addBook(Reader reader, Book book) throws RemoteException {
         //todo preparedStatement
-        StringBuilder sb = new StringBuilder();
-        sb.append("insert into books_readers values (default,").append(book.getID())
-                .append(",").append(reader.getID())
-                .append(",\"").append(format.format(new Date()))
-                .append("\",\"2019-12-12\")");
+        Connection connection = null;
+        PreparedStatement statement = null;
         try {
-            statement.execute( sb.toString());
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("insert into books_readers values (default, ?, ?, current_date, DATE_ADD(current_date, INTERVAL 14 DAY))");
+            statement.setInt(1, book.getID());
+            statement.setInt(2, reader.getID());
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        finally {
+            try { statement.close(); } catch (Exception e) { /* ignored */ }
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
+        }
     }
 
     @Override
     public HashMap<Book, Date> getDateReturn(Reader reader) throws RemoteException {
         //todo preparedStatement
-        HashMap<Book,Date> result = new HashMap<>();
+        HashMap<Book,Date> dateReturnList = new HashMap<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
         try {
-            ResultSet resultSet = statement.executeQuery("select * from books_readers where reader_ID = ?");
-            while (resultSet.next()) {
-                result.put(currentBook(resultSet.getInt(2)),resultSet.getDate(5));
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("select take_date, books_dictionary_id, name, description, print_year, return_date from books_readers join books on (books_readers.books_dictionary_id=books.id) where reader_ID = ?");
+            statement.setInt(1, reader.getID());
+            result = statement.executeQuery();
+            Book book;
+            while (result.next()) {
+                book = new Book();
+                book.setID(result.getInt(1));
+                book.setTakeDate(result.getDate(2));
+                book.setName(result.getString(3));
+                book.setDescription(result.getString(4));
+                book.setPrintYear(result.getInt(5));
+                setAuthor(book);
+                setGenre(book);
+                dateReturnList.put(book,result.getDate(6));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return result;
+        finally {
+            try { result.close(); } catch (Exception e) { /* ignored */ }
+            try { statement.close(); } catch (Exception e) { /* ignored */ }
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return dateReturnList;
     }
 
     @Override
     public List<Reader> getReaders() throws RemoteException {
         //todo
-        ResultSet resul = statement.executeQuery("select * from readers");
-        Reader reader;
-        while (resul.next()) {
-            reader = new Reader();
-            reader.setID(resul.getInt(1));
-            reader.setFirstName(resul.getString(2));
-            reader.setSecondName(resul.getString(3));
-            reader.setBirthDate(resul.getString(4));
-            readers.add(reader);
+        List<Reader> readers = new ArrayList<>();
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet result = null;
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.createStatement();
+            result = statement.executeQuery("select id, first_name, second_name, birth_date from readers");
+            Reader reader;
+            while (result.next()) {
+                reader = new Reader();
+                reader.setID(result.getInt(1));
+                reader.setFirstName(result.getString(2));
+                reader.setSecondName(result.getString(3));
+                reader.setBirthDate(result.getDate(4));
+                setBooks(reader);
+                readers.add(reader);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
+        finally {
+            try { result.close(); } catch (Exception e) { /* ignored */ }
+            try { statement.close(); } catch (Exception e) { /* ignored */ }
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return readers;
     }
 
-    public List<Book> getBooks() {
-        return books.subList(0,books.size());
-    }
 }

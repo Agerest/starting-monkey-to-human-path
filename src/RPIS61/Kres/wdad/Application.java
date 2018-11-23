@@ -9,8 +9,7 @@ import java.rmi.RemoteException;
 public class Application {
     public static void main(String[] args) throws RemoteException {
         JDBCDataManager jdbcDataManager = new JDBCDataManager();
-//        jdbcDataManager.negligentReaders().forEach(System.out::println);
-//        jdbcDataManager.addBook(jdbcDataManager.getReaders().get(1),jdbcDataManager.getBooks().get(1));
-        jdbcDataManager.removeBook(jdbcDataManager.getReaders().get(1),jdbcDataManager.getBooks().get(1));
+//        jdbcDataManager.getReaders().forEach(System.out::println);
+        jdbcDataManager.negligentReaders().forEach(System.out::println);
     }
 }

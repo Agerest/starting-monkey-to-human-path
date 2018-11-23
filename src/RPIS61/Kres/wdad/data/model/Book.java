@@ -10,6 +10,7 @@ public class Book implements Serializable {
     private Author author;
     private String name;
     private int printYear;
+    private Genres genres;
     private Genre genre;
     private Date takeDate;
     private SimpleDateFormat format;
@@ -59,6 +60,10 @@ public class Book implements Serializable {
         this.printYear = printYear;
     }
 
+    public void setGenres(Genres genre) {
+        this.genres = genre;
+    }
+
     public void setGenre(Genre genre) {
         this.genre = genre;
     }
@@ -82,6 +87,9 @@ public class Book implements Serializable {
     public Genre getGenre() {
         return genre;
     }
+    public Genres getGenres() {
+        return genres;
+    }
 
     @Override
     public String toString() {
@@ -89,7 +97,7 @@ public class Book implements Serializable {
         sb.append("Автор: ").append(author.toString()).append(", Название: ")
                 .append(name).append(", Год издания: ")
                 .append(printYear).append(", Жанр: ")
-                .append(genre).append(", Дата выдачи: ")
+                .append(genres).append(", Дата выдачи: ")
                 .append(format.format(takeDate));
         return sb.toString();
     }

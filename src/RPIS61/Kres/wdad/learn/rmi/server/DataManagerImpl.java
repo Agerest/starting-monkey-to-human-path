@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-//todo здесь внутри лежит XMLTask и методы обращаются к нему
 public class DataManagerImpl implements DataManager, Serializable {
     private XmlTask xmlTask;
 
