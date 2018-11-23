@@ -8,10 +8,7 @@ import RPIS61.Kres.wdad.data.storage.DataSourceFactory;
 
 import javax.sql.DataSource;
 import java.rmi.RemoteException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +18,7 @@ import java.util.List;
 public class JDBCDataManager implements DataManager {
 
     private Statement statement;
+    //todo - в топку
     private List<Reader> readers;
     private List<Book> books;
     private List<Author> authors;
@@ -37,13 +35,14 @@ public class JDBCDataManager implements DataManager {
             DataSource dataSource = DataSourceFactory.createDataSource();
             Connection connection = dataSource.getConnection();
             statement = connection.createStatement();
-            readBD();
+            //readBD();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     private void readBD() throws SQLException {
+        /* todo в топку =))))
         ResultSet resul = statement.executeQuery("select * from readers");
         Reader reader;
         while (resul.next()) {
@@ -83,6 +82,7 @@ public class JDBCDataManager implements DataManager {
             book.setPrintYear(Integer.parseInt(resul.getString(4)));
             books.add(book);
         }
+        */
     }
 
     private Reader currentReader(int ID) {
@@ -101,27 +101,29 @@ public class JDBCDataManager implements DataManager {
 
     @Override
     public List<Reader> negligentReaders() throws RemoteException {
-        List<Reader> readerList = new ArrayList<>();
-        long MILLISECONDS_IN_2_WEEKS = 7 * 24 * 60 * 60 * 1000 * 2;
+        //todo getCOnnection(), createStatement, process, close Statement, close connection
+        List<Reader> negligentReaders = new ArrayList<>();
+        //long MILLISECONDS_IN_2_WEEKS = 7 * 24 * 60 * 60 * 1000 * 2;
         try {
-            ResultSet books_readers = statement.executeQuery("select * from books_readers");
-                while (books_readers.next()) {
-                    if ((new Date().getTime()-books_readers.getDate(4).getTime()) > MILLISECONDS_IN_2_WEEKS) {
-                        readerList.add(currentReader(books_readers.getInt(3)));
-                    }
-                }
+            ResultSet books_readers = statement.executeQuery("select * from readers JOIN books_readers ON (readers.ID = book_readers.reader_id) where (CURRENT_DATE - DATE) > 12");
+                //todo создаешь reader-ов и набиваешь negligentReaders
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return readerList;
+        return negligentReaders;
 
     }
 
     @Override
     public void removeBook(Reader reader, Book book) throws RemoteException {
         try {
-            statement.execute("delete from books_readers where readers_id=" + reader.getID() + " and books_dictionary_id=" + book.getID());
+            //todo preparedStatement
+            PreparedStatement statement;
+            ("delete from books_readers where readers_id=? and books_dictionary_id=?");
+            statement.setInt(1, reader.getID());
+            statement.setInt(2, book.getID());
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -129,6 +131,7 @@ public class JDBCDataManager implements DataManager {
 
     @Override
     public void addBook(Reader reader, Book book) throws RemoteException {
+        //todo preparedStatement
         StringBuilder sb = new StringBuilder();
         sb.append("insert into books_readers values (default,").append(book.getID())
                 .append(",").append(reader.getID())
@@ -144,9 +147,10 @@ public class JDBCDataManager implements DataManager {
 
     @Override
     public HashMap<Book, Date> getDateReturn(Reader reader) throws RemoteException {
+        //todo preparedStatement
         HashMap<Book,Date> result = new HashMap<>();
         try {
-            ResultSet resultSet = statement.executeQuery("select * from books_readers");
+            ResultSet resultSet = statement.executeQuery("select * from books_readers where reader_ID = ?");
             while (resultSet.next()) {
                 result.put(currentBook(resultSet.getInt(2)),resultSet.getDate(5));
             }
@@ -158,7 +162,18 @@ public class JDBCDataManager implements DataManager {
 
     @Override
     public List<Reader> getReaders() throws RemoteException {
-        return readers.subList(0,readers.size());
+        //todo
+        ResultSet resul = statement.executeQuery("select * from readers");
+        Reader reader;
+        while (resul.next()) {
+            reader = new Reader();
+            reader.setID(resul.getInt(1));
+            reader.setFirstName(resul.getString(2));
+            reader.setSecondName(resul.getString(3));
+            reader.setBirthDate(resul.getString(4));
+            readers.add(reader);
+        }
+
     }
 
     public List<Book> getBooks() {
