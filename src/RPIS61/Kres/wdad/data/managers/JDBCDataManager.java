@@ -31,7 +31,7 @@ public class JDBCDataManager implements DataManager {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet result = null;
-        try {
+        try { //todo try-with-resources (connection & statement)
             connection = dataSource.getConnection();
             statement = connection.prepareStatement("select authors_id, first_name, second_name, birth_date from books_authors JOIN authors ON (authors.ID = books_authors.authors_id) where books_id = ?");
             statement.setInt(1,book.getID());
@@ -57,7 +57,7 @@ public class JDBCDataManager implements DataManager {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet result = null;
-        try {
+        try {//todo try-with-resources (connection & statement)
             connection = dataSource.getConnection();
             statement = connection.prepareStatement("select genres_id, name, description from books_genres JOIN genres ON (genres.ID = books_genres.genres_id) where books_id = ?");
             statement.setInt(1, book.getID());
@@ -82,7 +82,7 @@ public class JDBCDataManager implements DataManager {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet result = null;
-        try {
+        try {//todo try-with-resources (connection & statement)
             connection = dataSource.getConnection();
             statement = connection.prepareStatement("select books_dictionary_id, take_date, name, description, print_year from books_readers JOIN books ON (books.ID = books_readers.books_dictionary_id) where readers_id = ?");
             statement.setInt(1, reader.getID());
@@ -95,8 +95,8 @@ public class JDBCDataManager implements DataManager {
                 book.setName(result.getString(3));
                 book.setDescription(result.getString(4));
                 book.setPrintYear(result.getInt(5));
-                setAuthor(book);
-                setGenre(book);
+                setAuthor(book); //todo
+                setGenre(book);  //todo
                 reader.addBook(book);
             }
         } catch (SQLException e) {
@@ -111,18 +111,16 @@ public class JDBCDataManager implements DataManager {
 
     @Override
     public List<Reader> negligentReaders() throws RemoteException {
-        //todo getCOnnection(), createStatement, process, close Statement, close connection
         List<Reader> negligentReaders = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet result = null;
-        try {
+        try {//todo try-with-resources (connection & statement)
             connection = dataSource.getConnection();
             statement = connection.prepareStatement("select readers_id, first_name, second_name, birth_date from readers JOIN books_readers ON (readers.ID = books_readers.readers_id) where (CURRENT_DATE - take_date) > ?");
             int countDay = 14;
             statement.setInt(1, countDay);
             result = statement.executeQuery();
-                //todo создаешь reader-ов и набиваешь negligentReaders
             Reader reader;
             while (result.next()) {
                 reader = new Reader();
@@ -130,7 +128,7 @@ public class JDBCDataManager implements DataManager {
                 reader.setFirstName(result.getString(2));
                 reader.setSecondName(result.getString(3));
                 reader.setBirthDate(result.getDate(4));
-                setBooks(reader);
+                setBooks(reader);//todo
                 negligentReaders.add(reader);
             }
         } catch (SQLException e) {
@@ -148,8 +146,7 @@ public class JDBCDataManager implements DataManager {
     public void removeBook(Reader reader, Book book) throws RemoteException {
         Connection connection = null;
         PreparedStatement statement = null;
-        try {
-            //todo preparedStatement
+        try {//todo try-with-resources (connection & statement)
             connection = dataSource.getConnection();
             statement = connection.prepareStatement("delete from books_readers where readers_id=? and books_dictionary_id=?");
             statement.setInt(1, reader.getID());
@@ -167,10 +164,9 @@ public class JDBCDataManager implements DataManager {
 
     @Override
     public void addBook(Reader reader, Book book) throws RemoteException {
-        //todo preparedStatement
         Connection connection = null;
         PreparedStatement statement = null;
-        try {
+        try {//todo try-with-resources (connection & statement)
             connection = dataSource.getConnection();
             statement = connection.prepareStatement("insert into books_readers values (default, ?, ?, current_date, DATE_ADD(current_date, INTERVAL 14 DAY))");
             statement.setInt(1, book.getID());
@@ -187,12 +183,11 @@ public class JDBCDataManager implements DataManager {
 
     @Override
     public HashMap<Book, Date> getDateReturn(Reader reader) throws RemoteException {
-        //todo preparedStatement
         HashMap<Book,Date> dateReturnList = new HashMap<>();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet result = null;
-        try {
+        try {//todo try-with-resources (connection & statement)
             connection = dataSource.getConnection();
             statement = connection.prepareStatement("select take_date, books_dictionary_id, name, description, print_year, return_date from books_readers join books on (books_readers.books_dictionary_id=books.id) where reader_ID = ?");
             statement.setInt(1, reader.getID());
@@ -205,8 +200,8 @@ public class JDBCDataManager implements DataManager {
                 book.setName(result.getString(3));
                 book.setDescription(result.getString(4));
                 book.setPrintYear(result.getInt(5));
-                setAuthor(book);
-                setGenre(book);
+                setAuthor(book);//todo
+                setGenre(book);//todo
                 dateReturnList.put(book,result.getDate(6));
             }
         } catch (SQLException e) {
@@ -222,12 +217,11 @@ public class JDBCDataManager implements DataManager {
 
     @Override
     public List<Reader> getReaders() throws RemoteException {
-        //todo
         List<Reader> readers = new ArrayList<>();
         Connection connection = null;
         Statement statement = null;
         ResultSet result = null;
-        try {
+        try {//todo try-with-resources (connection & statement)
             connection = dataSource.getConnection();
             statement = connection.createStatement();
             result = statement.executeQuery("select id, first_name, second_name, birth_date from readers");
@@ -238,7 +232,7 @@ public class JDBCDataManager implements DataManager {
                 reader.setFirstName(result.getString(2));
                 reader.setSecondName(result.getString(3));
                 reader.setBirthDate(result.getDate(4));
-                setBooks(reader);
+                setBooks(reader);//todo
                 readers.add(reader);
             }
         } catch (SQLException e) {
